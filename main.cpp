@@ -10,4 +10,6 @@ int main() {
    num1.print();
    Thirteen num2 = Thirteen(3, '2');
    num2.print();
+   Thirteen num3 = Thirteen("123A");
+   num3.print();
 }
