@@ -5,8 +5,10 @@
 class Trapezoid : public Figure {
   public:
    Trapezoid();
-   Trapezoid(Point*, size_t);
+   Trapezoid(const Trapezoid&);
+   Trapezoid(Trapezoid&&) noexcept;
    Trapezoid(const std::initializer_list<Point>&);
+   virtual ~Trapezoid();
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Trapezoid& figure) {

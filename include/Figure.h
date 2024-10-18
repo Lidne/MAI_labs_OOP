@@ -10,8 +10,9 @@ class Figure {
   public:
    Figure();
    Figure(size_t);
-   Figure(Point*, size_t);
-   Figure(const std::initializer_list<Point>& t);
+   Figure(const Figure&);
+   Figure(Figure&&) noexcept;
+   Figure(const std::initializer_list<Point>&);
    virtual ~Figure() noexcept;
    Point* getPoints() const;
    void setPoints(Point*);

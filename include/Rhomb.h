@@ -5,8 +5,10 @@
 class Rhomb : public Figure {
   public:
    Rhomb();
-   Rhomb(Point*, size_t);
+   Rhomb(const Rhomb&);
+   Rhomb(Rhomb&&) noexcept;
    Rhomb(const std::initializer_list<Point>&);
+   virtual ~Rhomb();
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Rhomb& figure) {

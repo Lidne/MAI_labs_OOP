@@ -14,7 +14,13 @@ Figure::Figure() : points(nullptr), length(0) {}
 
 Figure::Figure(size_t n) : points(new Point[n]), length(n) {}
 
-Figure::Figure(Point* p, size_t l) : points(p), length(l) {}
+Figure::Figure(const Figure& other) { copy(other); }
+
+Figure::Figure(Figure&& other) noexcept
+    : length(other.length), points(other.points) {
+   other.length = 0;
+   other.points = nullptr;
+}
 
 Figure::~Figure() { clear(); }
 

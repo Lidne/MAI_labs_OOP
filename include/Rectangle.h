@@ -5,8 +5,10 @@
 class Rectangle : public Figure {
   public:
    Rectangle();
-   Rectangle(Point*, size_t);
+   Rectangle(const Rectangle&);
+   Rectangle(Rectangle&&) noexcept;
    Rectangle(const std::initializer_list<Point>&);
+   virtual ~Rectangle();
 };
 
 inline std::ostream& operator<<(std::ostream& os, const Rectangle& figure) {

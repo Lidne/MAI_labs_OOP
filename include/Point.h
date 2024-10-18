@@ -5,6 +5,7 @@ class Point {
   public:
    double x, y;
    Point();
+   Point(std::initializer_list<double>& t);
    Point(double, double);
    bool operator==(const Point&) const;
    bool operator!=(const Point&) const;

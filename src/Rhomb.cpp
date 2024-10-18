@@ -2,7 +2,9 @@
 
 Rhomb::Rhomb() : Figure(4) {}
 
-Rhomb::Rhomb(Point* p, size_t l) : Figure(p, l) {}
+Rhomb::Rhomb(const Rhomb& other) : Figure(other) {}
+
+Rhomb::Rhomb(Rhomb&& other) noexcept : Figure(other) {}
 
 Rhomb::Rhomb(const std::initializer_list<Point>& t) {
    if (t.size() != 4) {
@@ -34,3 +36,5 @@ Rhomb::Rhomb(const std::initializer_list<Point>& t) {
       i++;
    }
 }
+
+Rhomb::~Rhomb() {}

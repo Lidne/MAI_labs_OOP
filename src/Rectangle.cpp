@@ -3,7 +3,9 @@
 
 Rectangle::Rectangle() : Figure(4) {}
 
-Rectangle::Rectangle(Point* p, size_t l) : Figure(p, l) {}
+Rectangle::Rectangle(const Rectangle& other) : Figure(other) {}
+
+Rectangle::Rectangle(Rectangle&& other) noexcept : Figure(other) {}
 
 Rectangle::Rectangle(const std::initializer_list<Point>& t) {
    if (t.size() != 4) {
@@ -34,3 +36,5 @@ Rectangle::Rectangle(const std::initializer_list<Point>& t) {
       i++;
    }
 }
+
+Rectangle::~Rectangle() {}

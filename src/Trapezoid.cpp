@@ -3,7 +3,9 @@
 
 Trapezoid::Trapezoid() : Figure(4) {}
 
-Trapezoid::Trapezoid(Point* p, size_t l) : Figure(p, l) {}
+Trapezoid::Trapezoid(const Trapezoid& other) : Figure(other) {}
+
+Trapezoid::Trapezoid(Trapezoid&& other) noexcept : Figure(other) {}
 
 Trapezoid::Trapezoid(const std::initializer_list<Point>& t) {
    if (t.size() != 4) {
@@ -39,3 +41,5 @@ Trapezoid::Trapezoid(const std::initializer_list<Point>& t) {
       i++;
    }
 }
+
+Trapezoid::~Trapezoid() {}
