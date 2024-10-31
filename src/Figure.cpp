@@ -2,7 +2,8 @@
 #include <math.h>
 #include <iostream>
 
-void Figure::print() const {
+template <class T>
+void Figure<T>::print() const {
    std::cout << "[ ";
    for (size_t i = 0; i < length; i++) {
       std::cout << "(" << points[i].x << ", " << points[i].y << "), ";
@@ -10,50 +11,75 @@ void Figure::print() const {
    std::cout << "]" << std::endl;
 }
 
-Figure::Figure() : points(nullptr), length(0) {}
+template <class T>
+Figure<T>::Figure() : points(nullptr), length(0) {}
 
-Figure::Figure(size_t n) : points(new Point[n]), length(n) {}
+template <class T>
+Figure<T>::Figure(size_t n) : points(new Point<T>[n]), length(n) {}
 
-Figure::Figure(const Figure& other) { copy(other); }
+template <class T>
+Figure<T>::Figure(const Figure& other) {
+   copy(other);
+}
 
-Figure::Figure(Figure&& other) noexcept
+template <class T>
+Figure<T>::Figure(Figure&& other) noexcept
     : length(other.length), points(other.points) {
    other.length = 0;
    other.points = nullptr;
 }
 
-Figure::~Figure() { clear(); }
+template <class T>
+Figure<T>::~Figure() noexcept {
+   clear();
+}
 
-Figure::Figure(const std::initializer_list<Point>& t)
-    : points(new Point[t.size()]), length(t.size()) {
+template <class T>
+Figure<T>::Figure(const std::initializer_list<Point<T>>& t)
+    : points(new Point<T>[t.size()]), length(t.size()) {
    size_t i = 0;
-   for (Point p : t) {
+   for (Point<T> p : t) {
       points[i] = p;
       i++;
    }
 }
 
-Point* Figure::getPoints() const { return points; }
+template <class T>
+Point<T>* Figure<T>::getPoints() const {
+   return points;
+}
 
-void Figure::setPoints(Point* p) { points = p; }
+template <class T>
+void Figure<T>::setPoints(Point<T>* p) {
+   points = p;
+}
 
-void Figure::setPoint(Point& point, size_t i) { points[i] = point; }
+template <class T>
+void Figure<T>::setPoint(Point<T>& point, size_t i) {
+   points[i] = point;
+}
 
-size_t Figure::size() const { return length; }
+template <class T>
+size_t Figure<T>::size() const {
+   return length;
+}
 
-void Figure::clear() {
+template <class T>
+void Figure<T>::clear() {
    delete[] points;
    length = 0;
    points = nullptr;
 }
 
-void Figure::copy(const Figure& other) {
+template <class T>
+void Figure<T>::copy(const Figure<T>& other) {
    length = other.size();
-   points = new Point[length];
+   points = new Point<T>[length];
    std::copy(other.getPoints(), other.getPoints() + length, points);
 }
 
-Figure& Figure::operator=(const Figure& other) {
+template <class T>
+Figure<T>& Figure<T>::operator=(const Figure<T>& other) {
    if (this != &other) {
       clear();
       copy(other);
@@ -61,7 +87,8 @@ Figure& Figure::operator=(const Figure& other) {
    return *this;
 }
 
-Figure& Figure::operator=(Figure&& other) noexcept {
+template <class T>
+Figure<T>& Figure<T>::operator=(Figure<T>&& other) noexcept {
    if (this != &other) {
       length = other.size();
       delete[] points;
@@ -72,11 +99,12 @@ Figure& Figure::operator=(Figure&& other) noexcept {
    return *this;
 }
 
-bool Figure::operator==(const Figure& other) const {
+template <class T>
+bool Figure<T>::operator==(const Figure<T>& other) const {
    if (length != other.size()) {
       return false;
    }
-   Point* otherPoints = other.getPoints();
+   Point<T>* otherPoints = other.getPoints();
    for (size_t i = 0; i < length; i++) {
       if (points[i].x != otherPoints[i].x || points[i].y != otherPoints[i].y) {
          return false;
@@ -85,7 +113,8 @@ bool Figure::operator==(const Figure& other) const {
    return true;
 }
 
-double Figure::area() const {
+template <class T>
+double Figure<T>::area() const {
    /* функция будет правильно считать площадь, если точки указаны в порядке
     * обхода по/против часовой */
    double totalArea;
@@ -100,8 +129,9 @@ double Figure::area() const {
    return abs(totalArea) * 0.5;
 }
 
-Point* Figure::center() const {
-   Point* center = new Point();
+template <class T>
+Point<T>* Figure<T>::center() const {
+   Point<T>* center = new Point<T>();
    for (size_t i = 0; i < length; i++) {
       center->x += points[i].x;
       center->y += points[i].y;

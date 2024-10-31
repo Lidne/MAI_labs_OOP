@@ -6,9 +6,10 @@
 
 using namespace std;
 
-void printFigures(Figure** figures) {
+template <class T>
+void printFigures(Figure<T>** figures) {
    for (int i = 0; i < 3; i++) {
-      const Figure* figure = figures[i];
+      const Figure<T>* figure = figures[i];
       if (figure != nullptr) {
          cout << *figure << endl
               << "площадь: " << double(*figure) << endl
@@ -20,10 +21,10 @@ void printFigures(Figure** figures) {
 
 int main() {
    cout << "nah, i'd win" << endl;
-   Figure** figures = new Figure*[3];
-   Rectangle* rectangle = new Rectangle();
-   Rhomb* rhomb = new Rhomb();
-   Trapezoid* trapezoid = new Trapezoid();
+   Figure<double>** figures = new Figure<double>*[3];
+   Rectangle<double>* rectangle = new Rectangle<double>();
+   Rhomb<double>* rhomb = new Rhomb<double>();
+   Trapezoid<double>* trapezoid = new Trapezoid<double>();
 
    cout << "Введите координаты прямоугольника: " << endl;
    cin >> *rectangle;
@@ -39,7 +40,7 @@ int main() {
 
    double sumArea = 0;
    for (int i = 0; i < 3; i++) {
-      const Figure* figure = figures[i];
+      const Figure<double>* figure = figures[i];
       sumArea += double(*figure);
    }
 

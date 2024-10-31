@@ -1,40 +1,45 @@
 #include "Rhomb.h"
 
-Rhomb::Rhomb() : Figure(4) {}
+// template <class T>
+// Rhomb<T>::Rhomb() : Figure<T>(4) {}
 
-Rhomb::Rhomb(const Rhomb& other) : Figure(other) {}
+// template <class T>
+// Rhomb<T>::Rhomb(const Rhomb<T>& other) : Figure<T>(other) {}
 
-Rhomb::Rhomb(Rhomb&& other) noexcept : Figure(other) {}
+// template <class T>
+// Rhomb<T>::Rhomb(Rhomb<T>&& other) noexcept : Figure<T>(other) {}
 
-Rhomb::Rhomb(const std::initializer_list<Point>& t) {
+template <class T>
+Rhomb<T>::Rhomb(const std::initializer_list<T>& t) {
    if (t.size() != 4) {
       throw std::invalid_argument("Rhomb has 4 vertices, idiot!");
    }
 
    auto it = t.begin();
-   Point p1 = *it++;
-   Point p2 = *it++;
-   Point p3 = *it++;
-   Point p4 = *it;
+   Point<T> p1 = *it++;
+   Point<T> p2 = *it++;
+   Point<T> p3 = *it++;
+   Point<T> p4 = *it;
 
-   double len1 = (p2 - p1).abs();
-   double len2 = (p3 - p2).abs();
-   double len3 = (p4 - p3).abs();
-   double len4 = (p1 - p4).abs();
+   T len1 = (p2 - p1).abs();
+   T len2 = (p3 - p2).abs();
+   T len3 = (p4 - p3).abs();
+   T len4 = (p1 - p4).abs();
 
    if (len1 != len2 || len1 != len3 || len1 != len4 || len2 != len3 ||
        len2 != len4 || len3 != len4) {
       throw std::invalid_argument("Not a rhomb");
    }
 
-   length = t.size();
-   points = new Point[length];
+   Figure<T>::length = t.size();
+   Figure<T>::points = new Point<T>[Figure<T>::length];
 
    size_t i = 0;
-   for (Point p : t) {
-      points[i] = p;
+   for (Point<T> p : t) {
+      Figure<T>::points[i] = p;
       i++;
    }
 }
 
-Rhomb::~Rhomb() {}
+template <class T>
+Rhomb<T>::~Rhomb() {}

@@ -1,26 +1,38 @@
 #include "Point.h"
 #include <math.h>
 
-Point::Point() : x(0.0), y(0.0) {}
+template <class T>
+Point<T>::Point() : x(0.0), y(0.0) {}
 
-Point::Point(double newX, double newY) : x(newX), y(newY) {}
+template <class T>
+Point<T>::Point(T newX, T newY) : x(newX), y(newY) {}
 
-bool Point::operator==(const Point& other) const {
+template <class T>
+bool Point<T>::operator==(const Point<T>& other) const {
    return this->x == other.x && this->y == other.y;
 }
 
-bool Point::operator!=(const Point& other) const { return !(*this == other); }
+template <class T>
+bool Point<T>::operator!=(const Point<T>& other) const {
+   return !(*this == other);
+}
 
-Point Point::operator+(const Point& other) const {
+template <class T>
+Point<T> Point<T>::operator+(const Point<T>& other) const {
    return Point(x + other.x, y + other.y);
 }
 
-Point Point::operator-(const Point& other) const {
+template <class T>
+Point<T> Point<T>::operator-(const Point<T>& other) const {
    return Point(x - other.x, y - other.y);
 }
 
-double Point::operator*(const Point& other) const {
+template <class T>
+double Point<T>::operator*(const Point<T>& other) const {
    return x * other.x + y * other.y;
 }
 
-double Point::abs() const { return sqrt(x * x + y * y); }
+template <class T>
+double Point<T>::abs() const {
+   return sqrt(x * x + y * y);
+}

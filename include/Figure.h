@@ -2,36 +2,38 @@
 #include <iostream>
 #include "Point.h"
 
+template <class T>
 class Figure {
   protected:
-   Point* points;
+   Point<T>* points;
    size_t length;
 
   public:
    Figure();
    Figure(size_t);
-   Figure(const Figure&);
+   Figure(const Figure<T>&);
    Figure(Figure&&) noexcept;
-   Figure(const std::initializer_list<Point>&);
+   Figure(const std::initializer_list<Point<T>>&);
    virtual ~Figure() noexcept;
-   Point* getPoints() const;
-   void setPoints(Point*);
-   void setPoint(Point&, size_t);
+   Point<T>* getPoints() const;
+   void setPoints(Point<T>*);
+   void setPoint(Point<T>&, size_t);
    size_t size() const;
    void clear();
-   void copy(const Figure&);
+   void copy(const Figure<T>&);
    void print() const;
-   Figure& operator=(const Figure&);
-   Figure& operator=(Figure&&) noexcept;
-   bool operator==(const Figure&) const;
+   Figure<T>& operator=(const Figure<T>&);
+   Figure<T>& operator=(Figure<T>&&) noexcept;
+   bool operator==(const Figure<T>&) const;
    double area() const;
-   Point* center() const;
+   Point<T>* center() const;
    operator double() const { return area(); }
 };
 
-inline std::ostream& operator<<(std::ostream& os, const Figure& figure) {
+template <class T>
+inline std::ostream& operator<<(std::ostream& os, const Figure<T>& figure) {
    os << "[ ";
-   Point* points = figure.getPoints();
+   Point<T>* points = figure.getPoints();
    size_t size = figure.size();
    for (size_t i = 0; i < figure.size(); i++) {
       os << "(" << points[i].x << ", " << points[i].y << "), ";
@@ -40,11 +42,12 @@ inline std::ostream& operator<<(std::ostream& os, const Figure& figure) {
    return os;
 }
 
-inline std::istream& operator>>(std::istream& in, Figure& figure) {
+template <class T>
+inline std::istream& operator>>(std::istream& in, Figure<T>& figure) {
    double x, y;
    for (size_t i = 0; i < figure.size(); i++) {
       in >> x >> y;
-      Point point({x, y});
+      Point<T> point({x, y});
       figure.setPoint(point, i);
    }
    return in;
