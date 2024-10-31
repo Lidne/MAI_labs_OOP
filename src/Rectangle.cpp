@@ -1,17 +1,18 @@
 #include "Rectangle.h"
 #include <iostream>
+#include "Point.h"
 
-// template <class T>
-// Rectangle<T>::Rectangle() : Figure<T>(4) {}
+template <Number T>
+Rectangle<T>::Rectangle() : Figure<T>(4) {}
 
-// template <class T>
-// Rectangle<T>::Rectangle(const Rectangle<T>& other) : Figure<T>(other) {}
+template <Number T>
+Rectangle<T>::Rectangle(const Rectangle& other) : Figure<T>(other) {}
 
-// template <class T>
-// Rectangle<T>::Rectangle(Rectangle<T>&& other) noexcept : Figure<T>(other) {}
+template <Number T>
+Rectangle<T>::Rectangle(Rectangle&& other) noexcept : Figure<T>(other) {}
 
-template <class T>
-Rectangle<T>::Rectangle(const std::initializer_list<T>& t) {
+template <Number T>
+Rectangle<T>::Rectangle(const std::initializer_list<Point<T>>& t) {
    if (t.size() != 4) {
       throw std::invalid_argument("Rectangle has 4 vertices, idiot!");
    }
@@ -41,5 +42,5 @@ Rectangle<T>::Rectangle(const std::initializer_list<T>& t) {
    }
 }
 
-template <class T>
+template <Number T>
 Rectangle<T>::~Rectangle() noexcept {}

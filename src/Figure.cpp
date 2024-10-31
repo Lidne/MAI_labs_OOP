@@ -1,8 +1,9 @@
 #include "Figure.h"
+#include "Point.h"
 #include <math.h>
 #include <iostream>
 
-template <class T>
+template <Number T>
 void Figure<T>::print() const {
    std::cout << "[ ";
    for (size_t i = 0; i < length; i++) {
@@ -11,32 +12,33 @@ void Figure<T>::print() const {
    std::cout << "]" << std::endl;
 }
 
-template <class T>
+template <Number T>
 Figure<T>::Figure() : points(nullptr), length(0) {}
 
-template <class T>
-Figure<T>::Figure(size_t n) : points(new Point<T>[n]), length(n) {}
+template <Number T>
+Figure<T>::Figure(size_t n)
+    : points(std::make_unique<Point<T>[]>(n)), length(n) {}
 
-template <class T>
+template <Number T>
 Figure<T>::Figure(const Figure& other) {
    copy(other);
 }
 
-template <class T>
+template <Number T>
 Figure<T>::Figure(Figure&& other) noexcept
     : length(other.length), points(other.points) {
    other.length = 0;
    other.points = nullptr;
 }
 
-template <class T>
+template <Number T>
 Figure<T>::~Figure() noexcept {
    clear();
 }
 
-template <class T>
+template <Number T>
 Figure<T>::Figure(const std::initializer_list<Point<T>>& t)
-    : points(new Point<T>[t.size()]), length(t.size()) {
+    : points(points(std::make_unique<Point<T>[]>(t.size()))), length(t.size()) {
    size_t i = 0;
    for (Point<T> p : t) {
       points[i] = p;
@@ -44,42 +46,43 @@ Figure<T>::Figure(const std::initializer_list<Point<T>>& t)
    }
 }
 
-template <class T>
+template <Number T>
 Point<T>* Figure<T>::getPoints() const {
    return points;
 }
 
-template <class T>
-void Figure<T>::setPoints(Point<T>* p) {
-   points = p;
+template <Number T>
+void Figure<T>::setPoints(std::unique_ptr<Point<T>[]> p) {
+    points = std::move(p);
 }
 
-template <class T>
-void Figure<T>::setPoint(Point<T>& point, size_t i) {
-   points[i] = point;
+template <Number T>
+void Figure<T>::setPoint(const Point<T>& point, size_t i) {
+    if (i < length) {
+        points[i] = point;
+    }
 }
 
-template <class T>
+template <Number T>
 size_t Figure<T>::size() const {
    return length;
 }
 
-template <class T>
+template <Number T>
 void Figure<T>::clear() {
-   delete[] points;
-   length = 0;
+   points.reset();
    points = nullptr;
 }
 
-template <class T>
-void Figure<T>::copy(const Figure<T>& other) {
+template <Number T>
+void Figure<T>::copy(const Figure& other) {
    length = other.size();
    points = new Point<T>[length];
    std::copy(other.getPoints(), other.getPoints() + length, points);
 }
 
-template <class T>
-Figure<T>& Figure<T>::operator=(const Figure<T>& other) {
+template <Number T>
+Figure<T>& Figure<T>::operator=(const Figure& other) {
    if (this != &other) {
       clear();
       copy(other);
@@ -87,8 +90,8 @@ Figure<T>& Figure<T>::operator=(const Figure<T>& other) {
    return *this;
 }
 
-template <class T>
-Figure<T>& Figure<T>::operator=(Figure<T>&& other) noexcept {
+template <Number T>
+Figure<T>& Figure<T>::operator=(Figure&& other) noexcept {
    if (this != &other) {
       length = other.size();
       delete[] points;
@@ -99,8 +102,8 @@ Figure<T>& Figure<T>::operator=(Figure<T>&& other) noexcept {
    return *this;
 }
 
-template <class T>
-bool Figure<T>::operator==(const Figure<T>& other) const {
+template <Number T>
+bool Figure<T>::operator==(const Figure& other) const {
    if (length != other.size()) {
       return false;
    }
@@ -113,7 +116,7 @@ bool Figure<T>::operator==(const Figure<T>& other) const {
    return true;
 }
 
-template <class T>
+template <Number T>
 double Figure<T>::area() const {
    /* функция будет правильно считать площадь, если точки указаны в порядке
     * обхода по/против часовой */
@@ -129,7 +132,7 @@ double Figure<T>::area() const {
    return abs(totalArea) * 0.5;
 }
 
-template <class T>
+template <Number T>
 Point<T>* Figure<T>::center() const {
    Point<T>* center = new Point<T>();
    for (size_t i = 0; i < length; i++) {

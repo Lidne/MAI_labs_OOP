@@ -6,7 +6,7 @@
 
 using namespace std;
 
-template <class T>
+template <Number T>
 void printFigures(Figure<T>** figures) {
    for (int i = 0; i < 3; i++) {
       const Figure<T>* figure = figures[i];

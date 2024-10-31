@@ -1,18 +1,19 @@
 #pragma once
 #include <iostream>
 #include "Figure.h"
+#include "Point.h"
 
-template <class T>
+template <Number T>
 class Rectangle : public Figure<T> {
   public:
-   Rectangle() : Figure<T>(4) {}
-   Rectangle(const Rectangle<T>& other) : Figure<T>(other) {}
-   Rectangle(Rectangle<T>&& other) noexcept : Figure<T>(other) {}
-   Rectangle(const std::initializer_list<T>& t);
+   Rectangle();
+   Rectangle(const Rectangle& other);
+   Rectangle(Rectangle&& other) noexcept;
+   Rectangle(const std::initializer_list<Point<T>>& t);
    virtual ~Rectangle() noexcept;
 };
 
-template <class T>
+template <Number T>
 inline std::ostream& operator<<(std::ostream& os, const Rectangle<T>& figure) {
    os << "Rectangle[ ";
    Point<T>* points = figure.getPoints();
@@ -24,7 +25,7 @@ inline std::ostream& operator<<(std::ostream& os, const Rectangle<T>& figure) {
    return os;
 }
 
-template <class T>
+template <Number T>
 inline std::istream& operator>>(std::istream& in, Rectangle<T>& figure) {
    T x, y;
    for (size_t i = 0; i < figure.size(); i++) {

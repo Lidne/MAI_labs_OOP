@@ -2,13 +2,13 @@
 #include <iostream>
 #include "Figure.h"
 
-template <class T>
+template <Number T>
 class Rhomb : public Figure<T> {
   public:
-   Rhomb() : Figure<T>(4) {}
-   Rhomb(const Rhomb<T>& other) : Figure<T>(other) {}
-   Rhomb(Rhomb<T>&& other) noexcept : Figure<T>(other) {}
-   Rhomb(const std::initializer_list<T>&);
+   Rhomb();
+   Rhomb(const Rhomb& other);
+   Rhomb(Rhomb&& other) noexcept;
+   Rhomb(const std::initializer_list<Point<T>>&);
    virtual ~Rhomb();
 };
 

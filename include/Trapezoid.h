@@ -2,13 +2,13 @@
 #include <iostream>
 #include "Figure.h"
 
-template <class T>
+template <Number T>
 class Trapezoid : public Figure<T> {
   public:
-   Trapezoid() : Figure<T>(4) {}
-   Trapezoid(const Trapezoid<T>& other) : Figure<T>(other) {}
-   Trapezoid(Trapezoid<T>&& other) noexcept : Figure<T>(other) {}
-   Trapezoid(const std::initializer_list<T>&);
+   Trapezoid();
+   Trapezoid(const Trapezoid& other);
+   Trapezoid(Trapezoid&& other) noexcept;
+   Trapezoid(const std::initializer_list<Point<T>>&);
    virtual ~Trapezoid() noexcept;
 };
 

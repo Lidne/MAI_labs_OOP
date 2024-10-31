@@ -1,16 +1,16 @@
 #include "Rhomb.h"
 
-// template <class T>
-// Rhomb<T>::Rhomb() : Figure<T>(4) {}
+template <Number T>
+Rhomb<T>::Rhomb() : Figure<T>(4) {}
 
-// template <class T>
-// Rhomb<T>::Rhomb(const Rhomb<T>& other) : Figure<T>(other) {}
+template <Number T>
+Rhomb<T>::Rhomb(const Rhomb& other) : Figure<T>(other) {}
 
-// template <class T>
-// Rhomb<T>::Rhomb(Rhomb<T>&& other) noexcept : Figure<T>(other) {}
+template <Number T>
+Rhomb<T>::Rhomb(Rhomb&& other) noexcept : Figure<T>(other) {}
 
-template <class T>
-Rhomb<T>::Rhomb(const std::initializer_list<T>& t) {
+template <Number T>
+Rhomb<T>::Rhomb(const std::initializer_list<Point<T>>& t) {
    if (t.size() != 4) {
       throw std::invalid_argument("Rhomb has 4 vertices, idiot!");
    }
@@ -41,5 +41,5 @@ Rhomb<T>::Rhomb(const std::initializer_list<T>& t) {
    }
 }
 
-template <class T>
+template <Number T>
 Rhomb<T>::~Rhomb() {}

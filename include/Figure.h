@@ -1,30 +1,31 @@
 #pragma once
 #include <iostream>
+#include <memory>
 #include "Point.h"
 
-template <class T>
+template <Number T>
 class Figure {
   protected:
-   Point<T>* points;
+   std::unique_ptr<Point<T>[]> points;
    size_t length;
 
   public:
    Figure();
    Figure(size_t);
-   Figure(const Figure<T>&);
+   Figure(const Figure&);
    Figure(Figure&&) noexcept;
    Figure(const std::initializer_list<Point<T>>&);
    virtual ~Figure() noexcept;
    Point<T>* getPoints() const;
-   void setPoints(Point<T>*);
-   void setPoint(Point<T>&, size_t);
+   void setPoints(std::unique_ptr<Point<T>[]>);
+   void setPoint(const Point<T>&, size_t);
    size_t size() const;
    void clear();
-   void copy(const Figure<T>&);
+   void copy(const Figure&);
    void print() const;
-   Figure<T>& operator=(const Figure<T>&);
-   Figure<T>& operator=(Figure<T>&&) noexcept;
-   bool operator==(const Figure<T>&) const;
+   Figure& operator=(const Figure&);
+   Figure& operator=(Figure&&) noexcept;
+   bool operator==(const Figure&) const;
    double area() const;
    Point<T>* center() const;
    operator double() const { return area(); }

@@ -1,17 +1,18 @@
 #include "Trapezoid.h"
 #include <iostream>
+#include <memory>
 
-// template <class T>
-// Trapezoid<T>::Trapezoid() : Figure<T>(4) {}
+template <Number T>
+Trapezoid<T>::Trapezoid() : Figure<T>(4) {}
 
-// template <class T>
-// Trapezoid<T>::Trapezoid(const Trapezoid<T>& other) : Figure<T>(other) {}
+template <Number T>
+Trapezoid<T>::Trapezoid(const Trapezoid& other) : Figure<T>(other) {}
 
-// template <class T>
-// Trapezoid<T>::Trapezoid(Trapezoid<T>&& other) noexcept : Figure<T>(other) {}
+template <Number T>
+Trapezoid<T>::Trapezoid(Trapezoid&& other) noexcept : Figure<T>(other) {}
 
-template <class T>
-Trapezoid<T>::Trapezoid(const std::initializer_list<T>& t) {
+template <Number T>
+Trapezoid<T>::Trapezoid(const std::initializer_list<Point<T>>& t) {
    if (t.size() != 4) {
       throw std::invalid_argument("Trapezoid has 4 vertices, idiot!");
    }
@@ -46,5 +47,5 @@ Trapezoid<T>::Trapezoid(const std::initializer_list<T>& t) {
    }
 }
 
-template <class T>
+template <Number T>
 Trapezoid<T>::~Trapezoid() noexcept {}

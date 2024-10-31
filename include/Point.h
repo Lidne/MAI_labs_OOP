@@ -1,18 +1,24 @@
 #pragma once
+#include <concepts>
 #include <iostream>
+#include <memory>
+#include <type_traits>
 
-template <class T>
+template <typename T>
+concept Number = std::is_integral_v<T> || std::is_floating_point_v<T>;
+
+template <Number T>
 class Point {
   public:
    T x, y;
    Point();
    Point(std::initializer_list<T>& t);
    Point(T, T);
-   bool operator==(const Point<T>&) const;
-   bool operator!=(const Point<T>&) const;
-   Point<T> operator+(const Point<T>&) const;
-   Point<T> operator-(const Point<T>&) const;
-   double operator*(const Point<T>&) const;
+   bool operator==(const Point&) const;
+   bool operator!=(const Point&) const;
+   Point operator+(const Point&) const;
+   Point operator-(const Point&) const;
+   double operator*(const Point&) const;
    double abs() const;
 };
 
