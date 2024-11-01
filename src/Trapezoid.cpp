@@ -38,7 +38,7 @@ Trapezoid<T>::Trapezoid(const std::initializer_list<Point<T>>& t) {
    }
 
    Figure<T>::length = t.size();
-   Figure<T>::points = new Point<T>[Figure<T>::length];
+   Figure<T>::points = std::make_unique<Point<T>[]>(Figure<T>::length);
 
    size_t i = 0;
    for (Point<T> p : t) {
@@ -49,3 +49,26 @@ Trapezoid<T>::Trapezoid(const std::initializer_list<Point<T>>& t) {
 
 template <Number T>
 Trapezoid<T>::~Trapezoid() noexcept {}
+
+template <class T>
+std::ostream& operator<<(std::ostream& os, const Trapezoid<T>& figure) {
+   os << "Trapezoid[ ";
+   auto& points = figure.getPoints();
+   size_t size = figure.size();
+   for (size_t i = 0; i < figure.size(); i++) {
+      os << "(" << points[i].x << ", " << points[i].y << "), ";
+   }
+   os << "]";
+   return os;
+}
+
+template <Number T>
+std::istream& operator>>(std::istream& in, Trapezoid<T>& figure) {
+   T x, y;
+   for (size_t i = 0; i < figure.size(); i++) {
+      in >> x >> y;
+      Point<T> point(x, y);
+      figure.setPoint(point, i);
+   }
+   return in;
+}

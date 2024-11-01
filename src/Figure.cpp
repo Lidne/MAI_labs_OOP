@@ -1,7 +1,7 @@
 #include "Figure.h"
-#include "Point.h"
 #include <math.h>
 #include <iostream>
+#include "Point.h"
 
 template <Number T>
 void Figure<T>::print() const {
@@ -26,7 +26,7 @@ Figure<T>::Figure(const Figure& other) {
 
 template <Number T>
 Figure<T>::Figure(Figure&& other) noexcept
-    : length(other.length), points(other.points) {
+    : length(other.length), points(std::move(other.points)) {
    other.length = 0;
    other.points = nullptr;
 }
@@ -38,29 +38,28 @@ Figure<T>::~Figure() noexcept {
 
 template <Number T>
 Figure<T>::Figure(const std::initializer_list<Point<T>>& t)
-    : points(points(std::make_unique<Point<T>[]>(t.size()))), length(t.size()) {
+    : points(std::make_unique<Point<T>[]>(t.size())), length(t.size()) {
    size_t i = 0;
    for (Point<T> p : t) {
-      points[i] = p;
-      i++;
+      points[i++] = p;
    }
 }
 
 template <Number T>
-Point<T>* Figure<T>::getPoints() const {
+const std::unique_ptr<Point<T>[]>& Figure<T>::getPoints() const {
    return points;
 }
 
 template <Number T>
 void Figure<T>::setPoints(std::unique_ptr<Point<T>[]> p) {
-    points = std::move(p);
+   points = std::move(p);
 }
 
 template <Number T>
 void Figure<T>::setPoint(const Point<T>& point, size_t i) {
-    if (i < length) {
-        points[i] = point;
-    }
+   if (i < length) {
+      points[i] = point;
+   }
 }
 
 template <Number T>
@@ -76,9 +75,16 @@ void Figure<T>::clear() {
 
 template <Number T>
 void Figure<T>::copy(const Figure& other) {
-   length = other.size();
-   points = new Point<T>[length];
-   std::copy(other.getPoints(), other.getPoints() + length, points);
+   if (this != &other) {
+      clear();
+
+      length = other.length;
+      points = std::make_unique<Point<T>[]>(length);
+
+      for (size_t i = 0; i < length; i++) {
+         points[i] = other.points[i];
+      }
+   }
 }
 
 template <Number T>
@@ -93,11 +99,9 @@ Figure<T>& Figure<T>::operator=(const Figure& other) {
 template <Number T>
 Figure<T>& Figure<T>::operator=(Figure&& other) noexcept {
    if (this != &other) {
-      length = other.size();
-      delete[] points;
-      points = other.getPoints();
-      other.length = 0;
-      other.points = nullptr;
+      for (int i = 0; i < length; i++) {
+         points[i] = std::move(other.points[i]);
+      }
    }
    return *this;
 }
@@ -133,8 +137,8 @@ double Figure<T>::area() const {
 }
 
 template <Number T>
-Point<T>* Figure<T>::center() const {
-   Point<T>* center = new Point<T>();
+std::unique_ptr<Point<T>> Figure<T>::center() const {
+   std::unique_ptr<Point<T>> center = std::make_unique<Point<T>>();
    for (size_t i = 0; i < length; i++) {
       center->x += points[i].x;
       center->y += points[i].y;
@@ -142,4 +146,27 @@ Point<T>* Figure<T>::center() const {
    center->x /= length;
    center->y /= length;
    return center;
+}
+
+template <Number T>
+std::ostream& operator<<(std::ostream& os, const Figure<T>& figure) {
+   os << "[ ";
+   auto& points = figure.getPoints();
+   size_t size = figure.size();
+   for (size_t i = 0; i < size; i++) {
+      os << "(" << points[i].x << ", " << points[i].y << "), ";
+   }
+   os << "]";
+   return os;
+}
+
+template <Number T>
+std::istream& operator>>(std::istream& in, Figure<T>& figure) {
+   T x, y;
+   for (size_t i = 0; i < figure.size(); i++) {
+      in >> x >> y;
+      Point<T> point({x, y});
+      figure.setPoint(point, i);
+   }
+   return in;
 }

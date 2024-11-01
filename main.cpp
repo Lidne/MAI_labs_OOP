@@ -1,46 +1,48 @@
 #include <iostream>
-#include "Figure.h"
-#include "Rectangle.h"
-#include "Rhomb.h"
-#include "Trapezoid.h"
+#include "./src/Array.cpp"
+#include "./src/Figure.cpp"
+#include "./src/Point.cpp"
+#include "./src/Rectangle.cpp"
+#include "./src/Rhomb.cpp"
+#include "./src/Trapezoid.cpp"
 
 using namespace std;
 
-template <Number T>
-void printFigures(Figure<T>** figures) {
+template <class T>
+void printFigures(Array<T> figures) {
    for (int i = 0; i < 3; i++) {
-      const Figure<T>* figure = figures[i];
-      if (figure != nullptr) {
-         cout << *figure << endl
-              << "площадь: " << double(*figure) << endl
-              << "центр: " << *(*figure).center() << endl
-              << endl;
-      }
+      auto& figure = *figures[i];
+      cout << figure << endl
+           << "площадь: " << double(figure) << endl
+           << "центр: " << *(figure).center() << endl
+           << endl;
    }
 }
 
 int main() {
    cout << "nah, i'd win" << endl;
-   Figure<double>** figures = new Figure<double>*[3];
-   Rectangle<double>* rectangle = new Rectangle<double>();
-   Rhomb<double>* rhomb = new Rhomb<double>();
-   Trapezoid<double>* trapezoid = new Trapezoid<double>();
+   Array<Figure<double>> arr;
+   Rectangle<double> rectangle;
+   Rhomb<double> rhomb;
+   Trapezoid<double> trapezoid;
 
    cout << "Введите координаты прямоугольника: " << endl;
-   cin >> *rectangle;
-   figures[0] = rectangle;
-   cout << "Введите координаты ромба: " << endl;
-   cin >> *rhomb;
-   figures[1] = rhomb;
-   cout << "Введите координаты трапеции: " << endl;
-   cin >> *trapezoid;
-   figures[2] = trapezoid;
+   cin >> rectangle;
+   arr.append(std::make_shared<Rectangle<double>>(rectangle));
 
-   printFigures(figures);
+   cout << "Введите координаты ромба: " << endl;
+   cin >> rhomb;
+   arr.append(std::make_shared<Rhomb<double>>(rhomb));
+
+   cout << "Введите координаты трапеции: " << endl;
+   cin >> trapezoid;
+   arr.append(std::make_shared<Trapezoid<double>>(trapezoid));
+
+   printFigures(arr);
 
    double sumArea = 0;
    for (int i = 0; i < 3; i++) {
-      const Figure<double>* figure = figures[i];
+      const std::shared_ptr<Figure<double>> figure = arr[i];
       sumArea += double(*figure);
    }
 
@@ -54,9 +56,8 @@ int main() {
       cout << "Индекс за пределами массива" << endl;
       return 0;
    }
-
-   cout << figures[i] << *figures[i] << endl;
-   delete figures[i];
-   figures[i] = nullptr;
-   printFigures(figures);
+   // Figure<double> fig = *arr[i];
+   // cout << arr[i] << fig << endl;
+   arr.remove(i);
+   printFigures(arr);
 }

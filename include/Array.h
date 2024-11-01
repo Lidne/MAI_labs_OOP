@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include "Point.h"
 
-template <Number T>
+template <class T>
 class Array {
   public:
    Array();
@@ -17,12 +17,13 @@ class Array {
 
    void append(std::shared_ptr<T>);
    void remove(size_t);
+   void clear();
 
   private:
    size_t s;
    size_t capacity;
 
-   std::unique_ptr<std::shared_ptr<T[]>> arr;
-   void resize(size_t newCapacity);
-   void copy(const Array &other);
+   std::unique_ptr<std::shared_ptr<T>[]> arr;
+   void resize(size_t);
+   void copy(const Array &);
 };

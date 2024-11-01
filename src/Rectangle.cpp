@@ -33,7 +33,7 @@ Rectangle<T>::Rectangle(const std::initializer_list<Point<T>>& t) {
    }
 
    Figure<T>::length = t.size();
-   Figure<T>::points = new Point<T>[Figure<T>::length];
+   Figure<T>::points = std::make_unique<Point<T>[]>(Figure<T>::length);
 
    size_t i = 0;
    for (Point<T> p : t) {
@@ -44,3 +44,26 @@ Rectangle<T>::Rectangle(const std::initializer_list<Point<T>>& t) {
 
 template <Number T>
 Rectangle<T>::~Rectangle() noexcept {}
+
+template <Number T>
+std::ostream& operator<<(std::ostream& os, const Rectangle<T>& figure) {
+   os << "Rectangle[ ";
+   auto& points = figure.getPoints();
+   size_t size = figure.size();
+   for (size_t i = 0; i < figure.size(); i++) {
+      os << "(" << points[i].x << ", " << points[i].y << "), ";
+   }
+   os << "]";
+   return os;
+}
+
+template <Number T>
+std::istream& operator>>(std::istream& in, Rectangle<T>& figure) {
+   T x, y;
+   for (size_t i = 0; i < figure.size(); i++) {
+      in >> x >> y;
+      Point<T> point(x, y);
+      figure.setPoint(point, i);
+   }
+   return in;
+}

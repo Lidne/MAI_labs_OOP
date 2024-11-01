@@ -1,34 +1,37 @@
-#include "Figure.h"
+#include "../src/Figure.cpp"
 #include <gtest/gtest.h>
-#include "Rectangle.h"
-#include "Rhomb.h"
-#include "Trapezoid.h"
+#include <iostream>
+#include "../src/Array.cpp"
+#include "../src/Point.cpp"
+#include "../src/Rectangle.cpp"
+#include "../src/Rhomb.cpp"
+#include "../src/Trapezoid.cpp"
 
 TEST(FigureConstructorTest, EmptyConstructor) {
-   Figure figure;
+   Figure<double> figure;
 
    ASSERT_EQ(figure.size(), 0);
 }
 
 TEST(FigureConstructorTest, UninitializedConstructor) {
-   Figure figure(3);
+   Figure<double> figure(3);
 
    ASSERT_EQ(figure.size(), 3);
 }
 
 TEST(FigureConstructorTest, ListConstructor) {
-   Figure figure({Point(2.3, 2.1), Point(1.5, 5.1)});
+   Figure figure({Point<double>(2.3, 2.1), Point<double>(1.5, 5.1)});
 
-   Point* points = figure.getPoints();
+   auto& points = figure.getPoints();
    size_t size = figure.size();
 
-   ASSERT_EQ(points[0], Point(2.3, 2.1));
-   ASSERT_EQ(points[1], Point(1.5, 5.1));
+   ASSERT_EQ(points[0], Point<double>(2.3, 2.1));
+   ASSERT_EQ(points[1], Point<double>(1.5, 5.1));
 }
 
 TEST(FigureGeometryTest, AreaTest1) {
-   Figure square{Point(0.0, 0.0), Point(0.0, 3.0), Point(5.0, 3.0),
-                 Point(5.0, 0.0)};
+   Figure<double> square{Point<double>(0.0, 0.0), Point<double>(0.0, 3.0),
+                         Point<double>(5.0, 3.0), Point<double>(5.0, 0.0)};
 
    double area = double(square);
 
@@ -36,8 +39,8 @@ TEST(FigureGeometryTest, AreaTest1) {
 }
 
 TEST(FigureGeometryTest, AreaTest2) {
-   Figure trapezia{Point(0.0, 0.0), Point(0.0, 3.0), Point(5.0, 3.0),
-                   Point(8.0, 0.0)};
+   Figure<double> trapezia{Point<double>(0.0, 0.0), Point<double>(0.0, 3.0),
+                           Point<double>(5.0, 3.0), Point<double>(8.0, 0.0)};
 
    double area = double(trapezia);
 
@@ -45,39 +48,41 @@ TEST(FigureGeometryTest, AreaTest2) {
 }
 
 TEST(FigureGeometryTest, CenterTest1) {
-   Figure triangle{Point(0.0, 0.0), Point(2.0, 3.0), Point(4.0, 0.0)};
+   Figure<double> triangle{Point<double>(0.0, 0.0), Point<double>(2.0, 3.0),
+                           Point<double>(4.0, 0.0)};
 
    Point p = *triangle.center();
 
-   ASSERT_EQ(p, Point({2.0, 1.0}));
+   ASSERT_EQ(p, Point<double>({2.0, 1.0}));
 }
 
 TEST(FigureGeometryTest, CenterTest2) {
-   Figure trapezia{Point(0.0, 0.0), Point(0.0, 3.0), Point(5.0, 3.0),
-                   Point(7.0, 0.0)};
+   Figure<double> trapezia{Point<double>(0.0, 0.0), Point<double>(0.0, 3.0),
+                           Point<double>(5.0, 3.0), Point<double>(7.0, 0.0)};
 
-   Point p = *trapezia.center();
+   Point<double> p = *trapezia.center();
 
-   ASSERT_EQ(p, Point({3.0, 1.5}));
+   ASSERT_EQ(p, Point<double>({3.0, 1.5}));
 }
 
 TEST(FigureCopyTest, CopyTest) {
-   Figure figure({Point(2.3, 2.1)});
-   Figure figure2;
+   Figure<double> figure({Point<double>(2.3, 2.1)});
+   Figure<double> figure2;
 
    figure2 = figure;
-   Point* points = figure2.getPoints();
+   auto& points = figure2.getPoints();
 
-   ASSERT_EQ(points[0], Point(2.3, 2.1));
+   ASSERT_EQ(points[0], Point<double>(2.3, 2.1));
 }
 
 TEST(FigureCopyTest, MoveTest) {
-   Figure figure({Point(2.3, 2.1)});
-   Figure figure2;
-   Point* points1 = figure.getPoints();
+   Figure<double> figure({Point(2.3, 2.1)});
+   Figure<double> figure2(1);
+   auto& points1 = figure.getPoints();
 
    figure2 = std::move(figure);
-   Point* points2 = figure2.getPoints();
+   figure2.print();
+   auto& points2 = figure2.getPoints();
 
    ASSERT_EQ(points1, points2);
 }
