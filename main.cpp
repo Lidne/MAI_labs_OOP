@@ -6,6 +6,7 @@
 #include <random>
 #include <string>
 #include <vector>
+#include "Arena.h"
 #include "BattleVisitor.h"
 #include "ConsoleLogger.h"
 #include "FileLogger.h"
@@ -13,23 +14,16 @@
 #include "NPCFactory.h"
 
 int main() {
-   std::vector<std::shared_ptr<NPC>> npcs;
+   Arena arena(500, 500);
 
-   auto consoleLogger = std::make_shared<ConsoleLogger>();
-   auto fileLogger = std::make_shared<FileLogger>();
+   arena.registerNPC(NPCFactory::createNPC("Knight", "Arthur", 50, 50));
+   arena.registerNPC(NPCFactory::createNPC("Elf", "Legolas", 100, 100));
+   arena.registerNPC(NPCFactory::createNPC("Druid", "Merlin", 200, 200));
 
-   npcs.push_back(NPCFactory::createNPC("Knight", "Arthur", 50, 50));
-   npcs.push_back(NPCFactory::createNPC("Elf", "Legolas", 100, 100));
-   npcs.push_back(NPCFactory::createNPC("Druid", "Merlin", 200, 200));
+   arena.subscribeObserver(std::make_shared<ConsoleLogger>());
+   arena.subscribeObserver(std::make_shared<FileLogger>());
 
-   for (const auto& npc : npcs) {
-      std::cout << npc->getName() << " (" << npc->getType() << ") at ("
-                << npc->getX() << ", " << npc->getY() << ")" << std::endl;
-   }
-
-   BattleVisitor battle(150.0, npcs);
-   battle.addObserver(consoleLogger);
-   battle.addObserver(fileLogger);
+   arena.initiateCombat(150.0);
 
    return 0;
 }

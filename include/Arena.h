@@ -11,13 +11,9 @@
 class Arena {
   public:
    Arena(int arenaWidth, int arenaHeight);
-   void registerNPC(std::unique_ptr<NPC> character);
+   void registerNPC(std::shared_ptr<NPC> character);
    void subscribeObserver(std::shared_ptr<Observer> listener);
    void initiateCombat(double attackRadius);
-   void createNPC(const std::string &npcType, const std::string &npcName,
-                  int posX, int posY);
-   void exportNPCs(const std::string &outputFile);
-   void importNPCs(const std::string &inputFile);
    void displayNPCs() const;
 
   private:
