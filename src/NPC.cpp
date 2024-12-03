@@ -1,32 +1,18 @@
+#include "NPC.h"
 #include <cmath>
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <memory>
-#include <random>
 #include <string>
-#include <vector>
 
-class NPC {
-  protected:
-   std::string name;
-   int x, y;
+NPC::NPC(const std::string& name, int x, int y) : name(name), x(x), y(y) {}
 
-  public:
-   NPC(const std::string& name, int x, int y) : name(name), x(x), y(y) {}
-   virtual ~NPC() = default;
+const std::string& NPC::getName() const { return name; }
 
-   virtual std::string getType() const = 0;
+int NPC::getX() const { return x; }
+int NPC::getY() const { return y; }
 
-   const std::string& getName() const { return name; }
-   int getX() const { return x; }
-   int getY() const { return y; }
+double NPC::distanceTo(const NPC& other) const {
+   return std::sqrt(std::pow(x - other.x, 2) + std::pow(y - other.y, 2));
+}
 
-   double distanceTo(const NPC& other) const {
-      return std::sqrt(std::pow(x - other.x, 2) + std::pow(y - other.y, 2));
-   }
-
-   virtual bool fight(
-       NPC& other) = 0;  // Возвращает true, если текущий NPC выжил
-   virtual void accept(BattleVisitor& visitor) = 0;
-};
+bool NPC::isInRange(const NPC& other, double range) const {
+   return range >= distanceTo(other);
+}

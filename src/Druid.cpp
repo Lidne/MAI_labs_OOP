@@ -1,22 +1,12 @@
-#include <cmath>
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <memory>
-#include <random>
+#include "Druid.h"
 #include <string>
-#include <vector>
 
-class Druid : public NPC {
-  public:
-   Druid(const std::string& name, int x, int y) : NPC(name, x, y) {}
-   std::string getType() const override { return "Druid"; }
+Druid::Druid(const std::string& name, int x, int y) : NPC(name, x, y) {}
 
-   bool fight(NPC& other) override {
-      return true;  // канибализм)
-   }
+std::string Druid::getType() const { return "Druid"; }
 
-   void accept(BattleVisitor& visitor) override;
-};
+bool Druid::fight(NPC& other) {
+   return true;  // канибализм)
+}
 
 void Druid::accept(BattleVisitor& visitor) { visitor.visit(*this); }

@@ -1,11 +1,6 @@
-#include <cmath>
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <memory>
-#include <random>
+#pragma once
+
 #include <string>
-#include <vector>
 
 class Observer {
   public:

@@ -1,22 +1,10 @@
-#include <cmath>
-#include <fstream>
-#include <iostream>
-#include <map>
-#include <memory>
-#include <random>
+#include "Elf.h"
 #include <string>
-#include <vector>
 
-class Elf : public NPC {
-  public:
-   Elf(const std::string& name, int x, int y) : NPC(name, x, y) {}
-   std::string getType() const override { return "Elf"; }
+Elf::Elf(const std::string& name, int x, int y) : NPC(name, x, y) {}
 
-   bool fight(NPC& other) override {
-      return false;  // Убивает всех, но сам погибает.
-   }
+std::string Elf::getType() const { return "Elf"; }
 
-   void accept(BattleVisitor& visitor) override;
-};
+bool Elf::fight(NPC& other) { return false; }
 
 void Elf::accept(BattleVisitor& visitor) { visitor.visit(*this); }
