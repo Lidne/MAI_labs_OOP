@@ -7,7 +7,7 @@
 Arena::Arena(int arenaWidth, int arenaHeight)
     : arenaWidth(arenaWidth), arenaHeight(arenaHeight) {}
 
-void Arena::registerNPC(std::unique_ptr<NPC> character) {
+void Arena::registerNPC(std::shared_ptr<NPC> character) {
    characterList.push_back(std::move(character));
 }
 
