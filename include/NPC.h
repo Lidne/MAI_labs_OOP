@@ -1,21 +1,31 @@
 #pragma once
 
+#include <random>
 #include <string>
-#include "BattleVisitor.h"
+
+class Visitor;
 
 class NPC {
   protected:
+   bool alive;
    std::string name;
    int x, y;
+   double attackRadius;
+   double moveRadius;
 
   public:
-   NPC(const std::string& name, int x, int y);
+   NPC(const std::string& name, int x, int y, double attackRadius);
+   NPC(const NPC& other);
    virtual ~NPC() = default;
-   virtual std::string getType() const = 0;
+   virtual std::string getType() const;
    const std::string& getName() const;
    int getX() const;
    int getY() const;
+   bool isAlive() const;
+   void setAlive(bool state);
    double distanceTo(const NPC& other) const;
-   virtual bool fight(NPC& other) = 0;
-   virtual void accept(BattleVisitor& visitor) = 0;
+   virtual void accept(Visitor& visitor);
+   bool isInRange(const NPC& other) const;
+   void move(int dirX, int dirY);
+   bool inBorders(int width, int height) const;
 };

@@ -23,7 +23,7 @@ int main() {
    arena.subscribeObserver(std::make_shared<ConsoleLogger>());
    arena.subscribeObserver(std::make_shared<FileLogger>());
 
-   arena.initiateCombat(150.0);
+   arena.initiateCombat();
 
    return 0;
 }

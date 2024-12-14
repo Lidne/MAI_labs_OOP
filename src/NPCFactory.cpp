@@ -1,5 +1,8 @@
 #include "NPCFactory.h"
 #include <memory>
+#include "Druid.h"
+#include "Elf.h"
+#include "Knight.h"
 
 std::shared_ptr<NPC> NPCFactory::createNPC(const std::string& type,
                                            const std::string& name, int x,

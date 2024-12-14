@@ -1,8 +1,40 @@
 #include "Arena.h"
 #include <algorithm>
+#include <atomic>
 #include <fstream>
 #include <iostream>
+#include <shared_mutex>
+#include <thread>
 #include "BattleVisitor.h"
+#include "MoveVisitor.h"
+
+class InteractionHandler {
+  public:
+   InteractionHandler(Visitor& visitor, std::atomic<bool>& game_running,
+                      std::shared_mutex& npc_mutex,
+                      std::vector<std::shared_ptr<NPC>>& characterList)
+       : visitor(visitor),
+         game_running(game_running),
+         npc_mutex(npc_mutex),
+         characterList(characterList) {}
+
+   void operator()() const {
+      while (game_running) {
+         std::unique_lock lock(npc_mutex);
+
+         for (auto& npc : characterList) {
+            npc->accept(visitor);
+         }
+         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+      }
+   }
+
+  private:
+   Visitor& visitor;
+   std::atomic<bool>& game_running;
+   std::shared_mutex& npc_mutex;
+   std::vector<std::shared_ptr<NPC>>& characterList;
+};
 
 Arena::Arena(int arenaWidth, int arenaHeight)
     : arenaWidth(arenaWidth), arenaHeight(arenaHeight) {}
@@ -15,90 +47,65 @@ void Arena::subscribeObserver(std::shared_ptr<Observer> listener) {
    observerList.push_back(listener);
 }
 
-void Arena::initiateCombat(double attackRadius) {
-   std::cout << "Initiating combat with radius: " << attackRadius << std::endl;
+void Arena::initiateCombat() {
+   std::cout << "Initiating combat." << std::endl;
 
-   for (auto &listener : observerList) {
-      listener->notify("Combat started with radius: " +
-                       std::to_string(attackRadius));
+   for (auto& listener : observerList) {
+      listener->notify("Combat started.");
    }
 
-   BattleVisitor battleHandler(attackRadius, characterList, observerList);
-   std::vector<NPC *> activeCharacters;
-   for (auto &character : characterList) {
-      activeCharacters.push_back(character.get());
-   }
+   BattleVisitor battleVisitor(characterList, observerList);
+   MoveVisitor moveVisitor(characterList, observerList, arenaWidth,
+                           arenaHeight);
 
-   for (auto npcIt = activeCharacters.begin();
-        npcIt != activeCharacters.end();) {
-      NPC *character = *npcIt;
+   InteractionHandler battleHandler(battleVisitor, game_running, npc_mutex,
+                                    characterList);
+   InteractionHandler moveHandler(moveVisitor, game_running, npc_mutex,
+                                  characterList);
 
-      auto found =
-          std::find_if(characterList.begin(), characterList.end(),
-                       [character](const std::unique_ptr<NPC> &original) {
-                          return original.get() == character;
-                       });
+   std::thread battleThread(battleHandler);
+   std::thread moveThread(moveHandler);
 
-      if (found != characterList.end()) {
-         character->accept(battleHandler);
+   printMap();
+
+   game_running = false;
+   battleThread.join();
+   moveThread.join();
+}
+
+void Arena::interactNPC(Visitor& visitor) {
+   while (game_running) {
+      std::unique_lock lock(npc_mutex);
+
+      for (auto& npc : characterList) {
+         npc->accept(visitor);
       }
-
-      ++npcIt;
-   }
-
-   if (characterList.empty()) {
-      for (auto &listener : observerList) {
-         listener->notify("All NPCs defeated. Combat ended.");
-      }
-   } else {
-      std::string survivorsReport = "Combat ended. Surviving NPCs: ";
-      for (const auto &character : characterList) {
-         survivorsReport += character->getName() + " ";
-      }
-      for (auto &listener : observerList) {
-         listener->notify(survivorsReport);
-      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(1000));
    }
 }
 
-void Arena::createNPC(const std::string &npcType, const std::string &npcName,
-                      int posX, int posY) {
-   if (posX == -1 || posY == -1) {
-      posX = generateRandomCoordinate(0, arenaWidth);
-      posY = generateRandomCoordinate(0, arenaHeight);
-   }
+void Arena::printMap() const {
+   for (int i = 0; i < GAME_DURATION; i++) {
 
-   auto character = NPCFactory::createNPC(npcType, npcName, posX, posY);
-   if (character) {
-      registerNPC(std::move(character));
-   } else {
-      std::cerr << "Error creating NPC of type: " << npcType << "\n";
-   }
-}
+      std::shared_lock lock(npc_mutex);
 
-int Arena::generateRandomCoordinate(int lowerBound, int upperBound) {
-   static std::random_device rd;
-   static std::mt19937 gen(rd());
-   std::uniform_int_distribution<> dis(lowerBound, upperBound);
-   return dis(gen);
-}
+      std::vector<std::vector<char>> map(arenaHeight,
+                                         std::vector<char>(arenaWidth, ' '));
+      for (const auto& npc : characterList) {
+         if (npc->isAlive()) {
+            map[npc->getY()][npc->getX()] = 'N';
+         }
+      }
 
-void Arena::exportNPCs(const std::string &outputFile) {
-   std::ofstream file(outputFile);
-   if (!file.is_open()) {
-      throw std::runtime_error("Failed to open file for exporting NPCs");
-   }
-   for (const auto &character : characterList) {
-      file << character->getName() << " " << character->getX() << " "
-           << character->getY() << " " << character->getType() << "\n";
-   }
-   file.close();
-}
+      std::lock_guard guard(cout_mutex);
+      for (const auto& row : map) {
+         for (const auto& cell : row) {
+            std::cout << cell;
+         }
+         std::cout << '\n';
+      }
+      std::cout << "\n";
 
-void Arena::displayNPCs() const {
-   for (const auto &character : characterList) {
-      std::cout << "Type: " << character->getType()
-                << ", Name: " << character->getName() << ", Coordinates: ("
-                << character->getX() << ", " << character->getY() << ")\n";
+      std::this_thread::sleep_for(std::chrono::seconds(1));
    }
 }
