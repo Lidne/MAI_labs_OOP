@@ -92,6 +92,8 @@ void Arena::printMap() const {
       std::vector<std::vector<char>> map(arenaHeight,
                                          std::vector<char>(arenaWidth, ' '));
       for (const auto& npc : characterList) {
+         std::cout << "isAlive: " << npc->isAlive() << "; " << npc->getY()
+                   << "," << npc->getX() << std::endl;
          if (npc->isAlive()) {
             map[npc->getY()][npc->getX()] = 'N';
          }

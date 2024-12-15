@@ -3,9 +3,9 @@
 #include <string>
 
 Knight::Knight(const std::string& name, int x, int y)
-    : NPC(name, x, y, ATTACK_RADIUS) {}
+    : NPC(name, x, y, ATTACK_RADIUS, MOVE_RADIUS) {}
 
-std::string Knight::getType() const { return "Knight"; }
+const std::string Knight::getType() const { return "Knight"; }
 
 // bool Knight::fight(NPC& other) { return other.getType() != "Elf"; }
 

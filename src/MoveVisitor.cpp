@@ -13,10 +13,14 @@ MoveVisitor::MoveVisitor(std::vector<std::shared_ptr<NPC>>& npcs,
 void MoveVisitor::visit(std::unique_ptr<NPC> npc) {
    if (!npc->isAlive()) return;
 
-   int x = dice(), y = dice();
-   while (!(0 <= x && x <= width && 0 <= y && y <= height)) {
-      x = dice();
-      y = dice();
-   }
+   int x = genDir(), y = genDir();
    npc->move(x, y);
+}
+
+int MoveVisitor::genDir() const {
+   std::random_device rd;
+   std::mt19937 gen(rd());
+   std::uniform_int_distribution<int> dis(-1, 1);
+   int diceThrow = dis(gen);
+   return diceThrow;
 }

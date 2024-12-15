@@ -11,13 +11,14 @@ class NPC {
    std::string name;
    int x, y;
    double attackRadius;
-   double moveRadius;
+   int moveRadius;
 
   public:
-   NPC(const std::string& name, int x, int y, double attackRadius);
+   NPC(const std::string& name, int x, int y, double attackRadius,
+       int moveRadius);
    NPC(const NPC& other);
-   virtual ~NPC() = default;
-   virtual std::string getType() const;
+   ~NPC() = default;
+   virtual const std::string getType() const;
    const std::string& getName() const;
    int getX() const;
    int getY() const;

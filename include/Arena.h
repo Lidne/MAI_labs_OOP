@@ -22,6 +22,7 @@ class Arena {
    void interactNPC(Visitor& visitor);
    void displayNPCs() const;
    void printMap() const;
+   void generateNPCs();
 
   private:
    int arenaWidth, arenaHeight;

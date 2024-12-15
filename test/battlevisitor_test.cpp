@@ -1,17 +1,21 @@
 #include "BattleVisitor.h"
-#include <ConsoleLogger.h>
 #include <gtest/gtest.h>
+#include <memory>
+#include <vector>
+#include "NPC.h"
 #include "NPCFactory.h"
+#include "Observer.h"
 
 TEST(BattleVisitorTest, FightInRange) {
    std::vector<std::shared_ptr<NPC>> npcs = {
        NPCFactory::createNPC("Knight", "Arthur", 0, 0),
        NPCFactory::createNPC("Elf", "Legolas", 3, 4)};
 
-   BattleVisitor battle(5.0, npcs);
-   battle.visit(*npcs[0]);
+   BattleVisitor battle(npcs, {});
+   battle.visit(npcs[0]);
 
-   EXPECT_EQ(npcs.size(), 0);
+   EXPECT_FALSE(npcs[1]->isAlive());
+   EXPECT_TRUE(npcs[0]->isAlive());
 }
 
 TEST(BattleVisitorTest, NoFightOutOfRange) {
@@ -19,10 +23,11 @@ TEST(BattleVisitorTest, NoFightOutOfRange) {
        NPCFactory::createNPC("Knight", "Arthur", 0, 0),
        NPCFactory::createNPC("Elf", "Legolas", 10, 10)};
 
-   BattleVisitor battle(5.0, npcs);
-   battle.visit(*npcs[0]);
+   BattleVisitor battle(npcs, {});
+   battle.visit(npcs[0]);
 
-   EXPECT_EQ(npcs.size(), 2);
+   EXPECT_TRUE(npcs[0]->isAlive());
+   EXPECT_TRUE(npcs[1]->isAlive());
 }
 
 TEST(BattleVisitorTest, ObserverNotifications) {
@@ -30,12 +35,14 @@ TEST(BattleVisitorTest, ObserverNotifications) {
        NPCFactory::createNPC("Knight", "Arthur", 0, 0),
        NPCFactory::createNPC("Elf", "Legolas", 3, 4)};
 
-   BattleVisitor battle(5.0, npcs);
+   std::vector<std::shared_ptr<Observer>> observers;
    auto consoleLogger = std::make_shared<ConsoleLogger>();
-   battle.addObserver(consoleLogger);
+   observers.push_back(consoleLogger);
+
+   BattleVisitor battle(npcs, observers);
 
    testing::internal::CaptureStdout();
-   battle.visit(*npcs[0]);
+   battle.visit(npcs[0]);
    std::string output = testing::internal::GetCapturedStdout();
 
    EXPECT_NE(output.find("Arthur (Knight) fought Legolas (Elf)"),

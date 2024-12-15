@@ -21,4 +21,5 @@ class MoveVisitor : public Visitor {
    //    void visit(Elf& elf);
    //    void visit(Druid& druid);
    void visit(std::unique_ptr<NPC> npc) override;
+   int genDir() const;
 };
